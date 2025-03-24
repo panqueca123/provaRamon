@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d')
 
 
 
+
 const teclasPressionadas = {
     KeyW: false,
     KeyS: false,
@@ -33,11 +34,17 @@ class Entidade {
 
 class Cobra extends Entidade {
     #ponto = 0
+    #recorde
+    
     constructor(x, y, largura, altura) {
         super(x, y, largura, altura)
         this.corpo = [{ x: this.x, y: this.y }]
         this.tamanho = 1
+        this.#recorde = localStorage.getItem('recorde')
+            if (this.#recorde == null) {
+                return 0}
 
+            
 
     }
     desenhar() {
@@ -76,11 +83,18 @@ class Cobra extends Entidade {
         this.#ponto += 1
     }
     get ponto(){
-        return this.#ponto = 0
+        return this.#ponto 
+    }
+    
+    get recorde(){
+        return this.#recorde
+    }
+    set recorde(recorde){
+        this.#recorde = recorde
     }
 
     resetPonto(){
-       return this.#ponto = 0
+
     }
 
     colisaoBorda() {
@@ -93,13 +107,18 @@ class Cobra extends Entidade {
 
 
     #gameOver() {
-        alert(`Fim de jogo! Pontuação: ${ponto}`)
+        ctx.fillStyle = 'white'
+        ctx.font = '50px spongefont'
+        ctx.textAlign = 'center'
+        ctx.fillText("Game Over!", (canvas.width / 2) - 50, (canvas.height / 3));
+        ctx.font = '30px spongefont'
+        ctx.fillText(`Ponto: ${cobra.ponto}`, (canvas.width / 2) - 50, (canvas.height / 2) + 50)
+        ctx.fillText(`Recorde: ${cobra.recorde}`, (canvas.width / 2) - 50, (canvas.height / 2) )
+        
+        gameOver = true
         location.reload()
     }
 }
-
-
-
 
 
 class Comida extends Entidade {
@@ -134,7 +153,7 @@ function loop() {
     cobra.desenhar()
     cobra.atualizar()
     comida.desenhar()
-    cobra.resetPonto()
+    
     cobra.verificarColisao(comida)
     comida.comeu(cobra)
     cobra.colisaoBorda()
